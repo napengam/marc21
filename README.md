@@ -11,7 +11,7 @@ here <a href="//https://www.loc.gov/marc/umb/">https://www.loc.gov/marc/umb/</a>
 
 For usage of that reader look into index.php
 
-A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.marc21</a>
+A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 
 Testdata located in directory mrc are derived from 
 
