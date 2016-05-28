@@ -23,8 +23,10 @@
         $m21->setTagFilter($filter);
         
         echo '<p>&nbsp;';
-        
-        $h2 = '<h2 id=h2id style="">File='.basename($m21f[$f]).'  filtered by tags 100|245|020|246</h2>';
+        $git='All sources at '
+        . '<a href="https://github.com/napengam/marc21" style="margin-left:1em;vertical-align:center">GitHub<img src="GitHub.png"></a><br>';  
+          
+        $h2 = '<h2 id=h2id style="">File='.basename($m21f[$f]).'  filtered by tags 100|245|020|246</h2>'.$git;
         $echo = '<table style="margin-left:10px;width:auto" id=t1 class=tgrid>'
                 . '<tr><th class=tgrid_th colspan=4>' . $h2 . '</th></tr>'
                 . '<tr><th class=tgrid_th>Tag</th><th data-rotate class=tgrid_th>Indicator</th><th data-rotate class=tgrid_th>Subfield<br>Code</th><th class=tgrid_th> Subfielddata</th></tr>';
