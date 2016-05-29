@@ -20,8 +20,7 @@
 class m21File {
 
     private $fh, $filter, $leader, $dict, $data = array(), $nRecords, $dataLen;
-   
-    
+
     function __construct($m21File) {
         $this->fh = fopen($m21File, 'rb');
         $this->filter = '';
@@ -36,14 +35,16 @@ class m21File {
         while ($m21) {
             $i = 0;
             $nTags = (strlen($this->dict) - 1) / 12;
-
+            /*
+             * ***********************************************
+             * iterate over directory entries, each 12 charactes
+             * ***********************************************
+             */
             for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
-
                 $tag = mb_substr($this->dict, $i, 3);
-                if ($this->filter && !strpos($this->filter, $tag . '|')){
-                    continue;
+                if ($this->filter && !strpos($this->filter, $tag . '|')) {
+                    continue; //tag not in filter; skip it
                 }
-               
                 $len = mb_substr($this->dict, $i + 3, 4) * 1;
                 $offset = mb_substr($this->dict, $i + 3 + 4, 5) * 1;
                 $jj++;
@@ -71,13 +72,18 @@ class m21File {
                 }
                 /*
                  * ***********************************************
-                 * iterate over subfields 
+                 * iterate over subfields separated by 'x1f' 
                  * ***********************************************
                  */
                 $s = 0;
                 $len = $offset + $len;
-                while ($offset < $len && $this->data[$offset]!=="\x1E") {
+                while ($offset < $len && $this->data[$offset] !== "\x1E") {
                     if ($this->data[$offset] === "\x1F") {
+                        /*
+                         * ***********************************************
+                         *  save subfield code and data
+                         * ***********************************************
+                         */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
@@ -86,14 +92,18 @@ class m21File {
                         }
                         $s++;
                     } else {
+                        /*
+                         * ***********************************************
+                         *  no subfield code , save data
+                         * ***********************************************
+                         */
                         $tagInd[$jj]->subs[$s] = new stdClass();
-                        $tagInd[$jj]->subs[$s]->code = '';                        
+                        $tagInd[$jj]->subs[$s]->code = '';
                         while ($this->data[$offset] >= ' ') {
                             $tagInd[$jj]->subs[$s]->data.=$this->data[$offset];
                             $offset++;
                         }
                         $s++;
-                        
                     }
                 }
             }
@@ -112,13 +122,6 @@ class m21File {
      * private functions
      * ***********************************************
      */
-
-    private final function inFilter($tag) {
-        if ($this->filter) {
-            return strpos($this->filter, $tag . '|');
-        }
-        return true;
-    }
 
     private final function readM21Record(&$fh) {
         $this->leader = fread($fh, 24);
