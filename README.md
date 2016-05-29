@@ -9,14 +9,11 @@ MARC 21
 A description of the MARC 21 format can be found 
 here <a href="//https://www.loc.gov/marc/umb/">https://www.loc.gov/marc/umb/</a>
 
-For usage of that reader look into index.php
-
-A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
-
 Testdata located in directory mrc are derived from 
-
 <a href="http://datendienst.d-nb.de/cgi-bin/mabit.pl?userID=testdat&pass=testdat&cmd=login">
 http://datendienst.d-nb.de/</a>
 
+For usage of that reader look into index.php
+A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 
 </pre>
