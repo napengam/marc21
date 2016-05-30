@@ -28,8 +28,8 @@
 .tgrid td{
 
     vertical-align: top;   
-    font-family: 'Courier New',Courier,monospace;
-    font-family: 'Big Caslon', 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
+/*    font-family: 'Courier New',Courier,monospace;
+    font-family: 'Big Caslon', 'Book Antiqua', 'Palatino Linotype', Georgia, serif;*/
     white-space:pre;
     border: 1px solid black;
     /* font-size: 1rem; */ 
@@ -125,7 +125,7 @@
 .gridinput{
     font-weight:normal;
     font-size:0.8rem;
-   font-size:inherit;
+    font-size:inherit;
     background-color: rgb(255, 255, 153);
     color:blue;
     text-decoration: none;

@@ -45,6 +45,7 @@ class m21File {
                 if ($this->filter && !strpos($this->filter, $tag . '|')) {
                     continue; //tag not in filter; skip it
                 }
+
                 $len = mb_substr($this->dict, $i + 3, 4) * 1;
                 $offset = mb_substr($this->dict, $i + 3 + 4, 5) * 1;
                 $jj++;
@@ -87,9 +88,13 @@ class m21File {
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
-                        while ($this->data[$offset] >= ' ') {
-                            $tagInd[$jj]->subs[$s]->data.=$this->data[$offset++];
+                        $nc = 0;
+                        while ($this->data[$offset + $nc] >= ' ') {
+                            //  $tagInd[$jj]->subs[$s]->data.=$this->data[$offset++];
+                            $nc++;
                         }
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
+                        $offset+=$nc;
                         $s++;
                     } else {
                         /*
@@ -99,10 +104,12 @@ class m21File {
                          */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = '';
-                        while ($this->data[$offset] >= ' ') {
-                            $tagInd[$jj]->subs[$s]->data.=$this->data[$offset];
-                            $offset++;
+                        $nc = 0;
+                        while ($this->data[$offset + $nc] >= ' ') {
+                            $nc++;
                         }
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
+                        $offset+=$nc;
                         $s++;
                     }
                 }
