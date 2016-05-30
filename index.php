@@ -5,7 +5,7 @@
         <script src="js/float.js"></script>
         <link href = "css/grid.css" type = "text/css" rel = "stylesheet" >
         <link href = "css/float.css" type = "text/css" rel = "stylesheet">
-        
+
         <title></title>
     </head>
     <body>
@@ -16,36 +16,42 @@
         $m21f[1] = 'mrc/Btest.utf8.mrc';
         $m21f[2] = 'mrc/marc-00000000-00001999.mrc';
 
-        $filter='100|245|020|246';
-        if($_GET['nofilter']==1){
-            $filter='';
+        $filter = '100|245|020|246';
+        if ($_GET['nofilter'] == 1) {
+            $filter = '';
         }
-        
-        
-        $f=1;
+        if (strlen($_GET['filter']) > 0) {
+            $filter = $_GET['filter'];
+        }
+
+
+        $f = 1;
         $m21 = new m21File($m21f[$f]);
         $m21->setTagFilter($filter);
-        
+
         echo '<p>&nbsp;';
-        $git='All sources at '
-        . '<a href="https://github.com/napengam/marc21" style="margin-left:1em;vertical-align:center">GitHub<img src="GitHub.png"></a><br>';  
-          
-        $h2 = '<h2 id=h2id style="">File='.basename($m21f[$f]).'  filtered by tags 100|245|020|246</h2>'.$git;
+        $git = 'All sources at '
+                . '<a href="https://github.com/napengam/marc21" style="margin-left:1em;vertical-align:center">GitHub<img src="GitHub.png"></a><br>';
+
+        $h2 = '<h2 id=h2id style="">File=' . basename($m21f[$f]) . '  filtered by tags 100|245|020|246</h2>' . $git;
         $echo = '<table style="margin-left:10px;width:auto" id=t1 class=tgrid>'
                 . '<tr><th class=tgrid_th colspan=4>' . $h2 . '</th></tr>'
                 . '<tr><th class=tgrid_th>Tag</th><th data-rotate class=tgrid_th>Indicator</th>'
                 . '<th data-rotate class=tgrid_th>Subfield<br>Code</th><th class=tgrid_th> Subfielddata</th></tr>';
-        
+
         $nrec = 0;
         $tags = $m21->decodeRecord();
-        while ($tags) {
+        while ($tags !== NULL) {
             $n = count($tags);
-            $echo.= '<tr style="background:whitesmoke;"><td></td><td></td><td></td><td style="text-align:right;" >' . ++$nrec . '</td></tr>';
+            ++$nrec;
+            if ($n > 0) {
+                $echo.= '<tr style="background:whitesmoke;"><td></td><td></td><td></td><td style="text-align:right;" >' . $nrec . '</td></tr>';
+            }
             for ($i = 0; $i < $n; $i++) {
                 $echo.= '<tr><td>' . $tags[$i]->tag . '</td><td> ' . $tags[$i]->ind . '</td>';
                 $m = count($tags[$i]->subs);
-                for ($j = 0, $head = ''; $j < $m; $j++) {                  
-                    if ($tags[$i]->subs[$j]->code != '') {                     
+                for ($j = 0, $head = ''; $j < $m; $j++) {
+                    if ($tags[$i]->subs[$j]->code != '') {
                         $tags[$i]->subs[$j]->data = checkForUri($tags[$i]->subs[$j]->data, $tags[$i]->subs[$j]->code);
                     }
                     if ($j > 0) {
