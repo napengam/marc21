@@ -89,8 +89,7 @@ class m21File {
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
                         $nc = 0;
-                        while ($this->data[$offset + $nc] >= ' ') {
-                            //  $tagInd[$jj]->subs[$s]->data.=$this->data[$offset++];
+                        while ($this->data[$offset + $nc] >= ' ') {                      
                             $nc++;
                         }
                         $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
