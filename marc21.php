@@ -42,8 +42,10 @@ class m21File {
              */
             for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
                 $tag = mb_substr($this->dict, $i, 3);
-                if ($this->filter && !strpos($this->filter, $tag . '|')) {
-                    continue; //tag not in filter; skip it
+                if ($this->filter) {
+                    if (!strpos($this->filter, $tag . '|')) {
+                        continue; //tag not in filter; skip it
+                    }
                 }
 
                 $len = mb_substr($this->dict, $i + 3, 4) * 1;
@@ -89,7 +91,7 @@ class m21File {
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
                         $nc = 0;
-                        while ($this->data[$offset + $nc] >= ' ') {                      
+                        while ($this->data[$offset + $nc] >= ' ') {
                             $nc++;
                         }
                         $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
@@ -120,7 +122,9 @@ class m21File {
     }
 
     function setTagFilter($filter) {
-        $this->filter = ' ' . $filter . '|';
+        if ($filter !== '') {
+            $this->filter = ' ' . $filter . '|';
+        }
     }
 
     /*

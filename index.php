@@ -17,6 +17,10 @@
         $m21f[2] = 'mrc/marc-00000000-00001999.mrc';
 
         $filter='100|245|020|246';
+        if($_GET['nofilter']==1){
+            $filter='';
+        }
+        
         
         $f=1;
         $m21 = new m21File($m21f[$f]);
