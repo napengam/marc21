@@ -42,9 +42,9 @@ class m21File {
              */
             for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
                 $tag = mb_substr($this->dict, $i, 3);
-                
+
                 if ($this->filter) {
-                    if (strpos($this->filter, $tag)===false) {
+                    if (strpos($this->filter, $tag) === false) {
                         continue; //tag not in filter; skip it
                     }
                 }

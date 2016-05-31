@@ -16,7 +16,7 @@
         $m21f[1] = 'mrc/Btest.utf8.mrc';
         $m21f[2] = 'mrc/marc-00000000-00001999.mrc';
 
-        $filter = '100|245|020|246';
+        $filter = '100|245|020|246|264';
         if ($_GET['nofilter'] == 1) {
             $filter = '';
         }
@@ -33,20 +33,20 @@
         $git = 'All sources at '
                 . '<a href="https://github.com/napengam/marc21" style="margin-left:1em;vertical-align:center">GitHub<img src="GitHub.png"></a><br>';
 
-        $h2 = '<h2 id=h2id style="">File=' . basename($m21f[$f]) . '  filtered by tags 100|245|020|246</h2>' . $git;
+        $h2 = '<h2 id=h2id style="">File=' . basename($m21f[$f]) . "  filtered by tags $filter <br>" . $git;
         $echo = '<table style="margin-left:10px;width:auto" id=t1 class=tgrid>'
                 . '<tr><th class=tgrid_th colspan=4>' . $h2 . '</th></tr>'
                 . '<tr><th class=tgrid_th>Tag</th><th data-rotate class=tgrid_th>Indicator</th>'
                 . '<th data-rotate class=tgrid_th>Subfield<br>Code</th><th class=tgrid_th> Subfielddata</th></tr>';
 
         $nrec = 0;
-        $tags = $m21->decodeRecord();
-        while ($tags !== NULL) {
+        while (($tags = $m21->decodeRecord()) !== NULL) {
             $n = count($tags);
             ++$nrec;
-            if ($n > 0) {
-                $echo.= '<tr style="background:whitesmoke;"><td></td><td></td><td></td><td style="text-align:right;" >' . $nrec . '</td></tr>';
+            if ($n == 0) {
+                continue;
             }
+            $echo.= '<tr style="background:whitesmoke;"><td></td><td></td><td></td><td style="text-align:right;" >' . $nrec . '</td></tr>';
             for ($i = 0; $i < $n; $i++) {
                 $echo.= '<tr><td>' . $tags[$i]->tag . '</td><td> ' . $tags[$i]->ind . '</td>';
                 $m = count($tags[$i]->subs);
@@ -64,8 +64,6 @@
                 echo $echo;
                 $echo = '';
             }
-            $tags = $m21->decodeRecord();
-            //$tags = NULL;
         }
         echo $echo;
         echo '</table>';
