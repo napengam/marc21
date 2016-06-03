@@ -91,12 +91,13 @@ class m21File {
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
+                        $o=$offset;
                         $nc = 0;
-                        while ($this->data[$offset + $nc] >= ' ') {
-                            $nc++;
+                        while ($this->data[$o] >= ' ') {    
+                            $o++;
                         }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
-                        $offset+=$nc;
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o-$offset));
+                        $offset=$o;
                         $s++;
                     } else {
                         /*
@@ -106,12 +107,12 @@ class m21File {
                          */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = '';
-                        $nc = 0;
-                        while ($this->data[$offset + $nc] >= ' ') {
-                            $nc++;
+                        $o=$offset;
+                        while ($this->data[$o] >= ' ') {
+                            $o++;
                         }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $nc));
-                        $offset+=$nc;
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o-$offset));
+                        $offset=$o;
                         $s++;
                     }
                 }

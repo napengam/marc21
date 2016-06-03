@@ -89,7 +89,7 @@
             }
             addEvent(window, 'load', function () {
                 document.getElementById('h2id').innerHTML += '<br>Number of records=' + nrecForh2id;
-                floatHeader('t1', {ncpth: [1, 1], nccol: 1, topDif: 000, leftDif: 000});
+                floatHeader('t1', {ncpth: [0, 0], nccol:0, topDif: 000, leftDif: 000});
             });
 
         </script>
