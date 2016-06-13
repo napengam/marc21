@@ -2,7 +2,7 @@
 
 <pre>
 
-<b style="font-size:1.2em">MA</b>chine-<b style="font-size:1.2em">R</b>eadable <b style="font-size:1.2em">C</b>ataloging record.
+<b style="font-size:1.5em">MA</b>chine-<b style="font-size:1.5em">R</b>eadable <b style="font-size:1.5em">C</b>ataloging record.
 
 <b>marc21.php</b> a class to iterate over records of a file in marc 21 format
 
