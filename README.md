@@ -15,10 +15,10 @@ from <a href="http://datendienst.d-nb.de/cgi-bin/mabit.pl?userID=testdat&pass=te
 For usage of that reader look into index.php
 A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 
-<b>NOTE:</b> I do not check for any syntax errors within a file, I just assume,
+<b>NOTE:</b> I do not check for any syntax errors within a file, I just <span style="color:red"><b>assume</b></span>,
 that the file exists is readable and syntacticaly correct .
 
-<b>NOTE: NEVER ASSUME</b>
+<b>NOTE: <span style="color:red">NEVER ASSUME</span> </b>
 
 
 </pre>
