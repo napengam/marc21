@@ -15,4 +15,10 @@ from <a href="http://datendienst.d-nb.de/cgi-bin/mabit.pl?userID=testdat&pass=te
 For usage of that reader look into index.php
 A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 
+<b>NOTE:</b> I do not check for any syntax errors within a file, I just assume,
+that the file exists is readable and syntacticaly correct .
+
+<b>NOTE: NEVER ASSUME</b>
+
+
 </pre>

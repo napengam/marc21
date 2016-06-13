@@ -39,13 +39,14 @@
                 . '<tr><th class=tgrid_th>Tag</th><th data-rotate class=tgrid_th>Indicator</th>'
                 . '<th data-rotate class=tgrid_th>Subfield<br>Code</th><th class=tgrid_th> Subfielddata</th></tr>';
 
-        $nrec = 0;
+        $nrec = $nmatch= 0;
         while (($tags = $m21->decodeRecord()) !== NULL) {
             $n = count($tags);
             ++$nrec;
             if ($n == 0) {
                 continue;
             }
+            $nmatch++;
             $echo.= '<tr style="background:whitesmoke;"><td></td><td></td><td></td><td style="text-align:right;" >' . $nrec . '</td></tr>';
             for ($i = 0; $i < $n; $i++) {
                 $echo.= '<tr><td>' . $tags[$i]->tag . '</td><td> ' . $tags[$i]->ind . '</td>';
@@ -67,7 +68,7 @@
         }
         echo $echo;
         echo '</table>';
-        echo "<script>var nrecForh2id=$nrec</script>";
+        echo "<script>var nrecForh2id='$nmatch/$nrec'</script>";
 
         function checkForUri($data, $code) {
             if ($code * 1 === 0) {
