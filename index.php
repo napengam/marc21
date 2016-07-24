@@ -25,7 +25,7 @@
         }
 
 
-        $f = 1;
+        $f = 0;
         $m21 = new m21File($m21f[$f]);
         $m21->setTagFilter($filter);
 
@@ -39,7 +39,7 @@
                 . '<tr><th class=tgrid_th>Tag</th><th data-rotate class=tgrid_th>Indicator</th>'
                 . '<th data-rotate class=tgrid_th>Subfield<br>Code</th><th class=tgrid_th> Subfielddata</th></tr>';
 
-        $nrec = $nmatch= 0;
+        $nrec = $nmatch = 0;
         while (($tags = $m21->decodeRecord()) !== NULL) {
             $n = count($tags);
             ++$nrec;
@@ -55,10 +55,10 @@
                     if ($tags[$i]->subs[$j]->code != '') {
                         $tags[$i]->subs[$j]->data = checkForUri($tags[$i]->subs[$j]->data, $tags[$i]->subs[$j]->code);
                     }
-                    if ($j > 0) {
+                    $echo.= "$head<td align=center>" . $tags[$i]->subs[$j]->code . '</td><td> ' . wordwrap($tags[$i]->subs[$j]->data, 120) . '</td></tr>';
+                    if ($head === '') {
                         $head = '<tr><td></td><td></td>';
                     }
-                    $echo.= "$head<td align=center>" . $tags[$i]->subs[$j]->code . '</td><td> ' . wordwrap($tags[$i]->subs[$j]->data, 120) . '</td></tr>';
                 }
             }
             if (strlen($echo) > 2048 * 100) {
@@ -90,7 +90,7 @@
             }
             addEvent(window, 'load', function () {
                 document.getElementById('h2id').innerHTML += '<br>Number of records=' + nrecForh2id;
-                floatHeader('t1', {ncpth: [0, 0], nccol:0, topDif: 000, leftDif: 000});
+                floatHeader('t1', {ncpth: [0, 0], nccol: 0, topDif: 000, leftDif: 000});
             });
 
         </script>

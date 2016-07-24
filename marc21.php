@@ -49,8 +49,8 @@ class m21File {
                     }
                 }
 
-                $len = mb_substr($this->dict, $i + 3, 4) * 1;
-                $offset = mb_substr($this->dict, $i + 3 + 4, 5) * 1;
+                $len = mb_substr($this->dict, $i + 3, 4) + 0;
+                $offset = mb_substr($this->dict, $i + 3 + 4, 5) + 0;
                 $jj++;
                 $tagInd[$jj] = (new stdClass());
                 $tagInd[$jj]->tag = $tag;
@@ -91,13 +91,13 @@ class m21File {
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
-                        $o=$offset;
+                        $o = $offset;
                         $nc = 0;
-                        while ($this->data[$o] >= ' ') {    
+                        while ($this->data[$o] >= ' ') {
                             $o++;
                         }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o-$offset));
-                        $offset=$o;
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
+                        $offset = $o;
                         $s++;
                     } else {
                         /*
@@ -107,12 +107,12 @@ class m21File {
                          */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = '';
-                        $o=$offset;
+                        $o = $offset;
                         while ($this->data[$o] >= ' ') {
                             $o++;
                         }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o-$offset));
-                        $offset=$o;
+                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
+                        $offset = $o;
                         $s++;
                     }
                 }
