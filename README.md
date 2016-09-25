@@ -12,6 +12,16 @@ here <a href="//https://www.loc.gov/marc/umb/">https://www.loc.gov/marc/umb/</a>
 Testdata located in directory <b>mrc</b> are derived 
 from <a href="http://datendienst.d-nb.de/cgi-bin/mabit.pl?userID=testdat&pass=testdat&cmd=login">http://datendienst.d-nb.de/</a>
 
+<b>NOTE:</b> The data files hold characters in utf 8 decomposed form. Because of this the string is normalized using 
+a call to php function <i> normalizer_normalize </i> to bring it back into utf8 composed form, before it is stored. 
+The reason for doing this is, comparing strings from the data file, against strings used by PHP.
+In decomposed form, the encoding of special characters like umlauts &auml; &ouml; &uuml; etc uses more bytes, than 
+in composed form that PHP is using. Next, some fonts might get in trouble to render decomposed utf 8 correctly.   
+
+More on the subject of decomposed, composed utf 8 here: <a href="http://unicode.org/reports/tr15/">unicode.org</a>
+  
+
+
 For usage of that reader look into index.php
 A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 

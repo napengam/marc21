@@ -9,6 +9,8 @@
 //  Returns a structure like the one below
 //
 //        $tagInd[0]->tag = '100';
+//        $tagInd[0]->seq = $jj;
+//        $tagInd[0]->tag = '100';
 //        $tagInd[0]->ind = '1_';
 //        $tagInd[0]->subs = Array();
 //        $tagInd[0]->subs[0]->code = 'a';
@@ -19,7 +21,7 @@
 //
 class m21File {
 
-    private $fh, $filter, $leader, $dict, $data = array(), $nRecords, $dataLen;
+    private $fh, $filter, $leader, $dict, $data = array(), $nRecords, $dataLen, $recordoffset;
 
     function __construct($m21File) {
         $this->fh = fopen($m21File, 'rb');
@@ -40,7 +42,7 @@ class m21File {
              * iterate over directory entries, each 12 charactes
              * ***********************************************
              */
-            for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
+            for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i += 12) {
                 $tag = mb_substr($this->dict, $i, 3);
 
                 if ($this->filter) {
@@ -54,6 +56,7 @@ class m21File {
                 $jj++;
                 $tagInd[$jj] = (new stdClass());
                 $tagInd[$jj]->tag = $tag;
+                $tagInd[$jj]->seq = $jj;
                 /*
                  * ***********************************************
                  * indicators ?
@@ -85,36 +88,39 @@ class m21File {
                     if ($this->data[$offset] === "\x1F") {
                         /*
                          * ***********************************************
-                         *  save subfield code and data
+                         *  save subfield code 
                          * ***********************************************
                          */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
-                        $o = $offset;
-                        $nc = 0;
-                        while ($this->data[$o] >= ' ') {
-                            $o++;
-                        }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
-                        $offset = $o;
-                        $s++;
                     } else {
                         /*
                          * ***********************************************
-                         *  no subfield code , save data
+                         *  no subfield code 
                          * ***********************************************
                          */
                         $tagInd[$jj]->subs[$s] = new stdClass();
                         $tagInd[$jj]->subs[$s]->code = '';
-                        $o = $offset;
-                        while ($this->data[$o] >= ' ') {
-                            $o++;
-                        }
-                        $tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
-                        $offset = $o;
-                        $s++;
                     }
+                    /*
+                     * ***********************************************
+                     * skip until end of data
+                     * ***********************************************
+                     */
+                    $o = $offset;
+                    while ($this->data[$o] >= ' ') {
+                        $o++;
+                    }
+                    /*
+                     * ***********************************************
+                     * save data
+                     * ***********************************************
+                     */
+                    //$tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
+                    $tagInd[$jj]->subs[$s]->data = normalizer_normalize(implode(array_slice($this->data, $offset, $o - $offset)), Normalizer::FORM_C);
+                    $offset = $o;
+                    $s++;
                 }
             }
             return $tagInd;
@@ -129,6 +135,10 @@ class m21File {
         }
     }
 
+    function seekRecord($offset) {
+        fseek($this->fh, $offset);
+    }
+
     /*
      * ***********************************************
      * private functions
@@ -140,6 +150,7 @@ class m21File {
         if (feof($fh)) {
             return false;
         }
+        $this->recordoffset = ftell($fh) - 24;
         $reclen = mb_substr($this->leader, 0, 5) * 1;
         $dataoffset = mb_substr($this->leader, 12, 5) * 1;
         $this->dict = fread($fh, $dataoffset - 24);
