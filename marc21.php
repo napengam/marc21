@@ -10,7 +10,6 @@
 //
 //        $tagInd[0]->tag = '100';
 //        $tagInd[0]->seq = $jj;
-//        $tagInd[0]->tag = '100';
 //        $tagInd[0]->ind = '1_';
 //        $tagInd[0]->subs = Array();
 //        $tagInd[0]->subs[0]->code = 'a';
@@ -21,7 +20,8 @@
 //
 class m21File {
 
-    private $fh, $filter, $leader, $dict, $data = array(), $nRecords, $dataLen, $recordoffset;
+    private $fh, $filter, $leader, $dict, $data = array(), $nRecords, $dataLen;
+    public $recordOffset, $pos67;
 
     function __construct($m21File) {
         $this->fh = fopen($m21File, 'rb');
@@ -42,7 +42,8 @@ class m21File {
              * iterate over directory entries, each 12 charactes
              * ***********************************************
              */
-            for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i += 12) {
+            $refTag = '';
+            for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
                 $tag = mb_substr($this->dict, $i, 3);
 
                 if ($this->filter) {
@@ -54,15 +55,19 @@ class m21File {
                 $len = mb_substr($this->dict, $i + 3, 4) + 0;
                 $offset = mb_substr($this->dict, $i + 3 + 4, 5) + 0;
                 $jj++;
-                $tagInd[$jj] = (new stdClass());
+                if ($tag != $refTag) {
+                    $seq = 1;
+                    $refTag = $tag;
+                }
+                $tagInd[$jj] = (object) Array();
                 $tagInd[$jj]->tag = $tag;
-                $tagInd[$jj]->seq = $jj;
                 /*
                  * ***********************************************
                  * indicators ?
                  * ***********************************************
                  */
                 $tagInd[$jj]->ind = '  ';
+                $tagInd[$jj]->seq = $seq++;
                 if ($tag >= '010') {
                     $tagInd[$jj]->ind = '__';
                     if ($this->data[$offset] > ' ') {
@@ -91,7 +96,7 @@ class m21File {
                          *  save subfield code 
                          * ***********************************************
                          */
-                        $tagInd[$jj]->subs[$s] = new stdClass();
+                        $tagInd[$jj]->subs[$s] = (object) Array();
                         $tagInd[$jj]->subs[$s]->code = $this->data[++$offset];
                         $offset++;
                     } else {
@@ -100,29 +105,44 @@ class m21File {
                          *  no subfield code 
                          * ***********************************************
                          */
-                        $tagInd[$jj]->subs[$s] = new stdClass();
+                        $tagInd[$jj]->subs[$s] = (object) Array();
                         $tagInd[$jj]->subs[$s]->code = '';
                     }
                     /*
-                     * ***********************************************
-                     * skip until end of data
-                     * ***********************************************
+                     * ************
+                     * skip to end of data
+                     * *************
                      */
+                    $myData = Array();
                     $o = $offset;
                     while ($this->data[$o] >= ' ') {
-                        $o++;
+                        if ((ord($this->data[$o]) === 194 && ord($this->data[$o + 1]) === 152 ) ||
+                                (ord($this->data[$o]) === 194 && ord($this->data[$o + 1]) === 156 )) {
+                            /*
+                             * ************
+                             * skip over  
+                             * NON-SORT BEGIN / START OF STRING UTF 8 as (HEX) 0xC2  0x98 (dec) 194 152
+                             * NON-SORT END / STRING TERMINATOR UTF 8 as (HEX) 0xC2  0x9C (dec) 194 156
+                             * 
+                             * *************
+                             */
+                            $o+=2;
+                        } else {
+                            $myData[] = $this->data[$o];
+                            $o++;
+                        }
                     }
                     /*
-                     * ***********************************************
+                     * ************
                      * save data
-                     * ***********************************************
+                     * *************
                      */
-                    //$tagInd[$jj]->subs[$s]->data = implode(array_slice($this->data, $offset, $o - $offset));
-                    $tagInd[$jj]->subs[$s]->data = normalizer_normalize(implode(array_slice($this->data, $offset, $o - $offset)), Normalizer::FORM_C);
+                    $tagInd[$jj]->subs[$s]->data = normalizer_normalize(trim(implode($myData)), Normalizer::FORM_C);
                     $offset = $o;
                     $s++;
                 }
             }
+            unset($myData);
             return $tagInd;
         }
         fclose($this->fh);
@@ -135,8 +155,9 @@ class m21File {
         }
     }
 
-    function seekRecord($offset) {
+    function setPosition($offset) {
         fseek($this->fh, $offset);
+        $this->recordOffset = $offset;
     }
 
     /*
@@ -146,11 +167,12 @@ class m21File {
      */
 
     private final function readM21Record(&$fh) {
+        $this->recordOffset = ftell($fh);
         $this->leader = fread($fh, 24);
         if (feof($fh)) {
             return false;
         }
-        $this->recordoffset = ftell($fh) - 24;
+        $this->pos67 = mb_substr($this->leader, 6, 2);
         $reclen = mb_substr($this->leader, 0, 5) * 1;
         $dataoffset = mb_substr($this->leader, 12, 5) * 1;
         $this->dict = fread($fh, $dataoffset - 24);

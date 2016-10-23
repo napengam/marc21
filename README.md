@@ -18,9 +18,17 @@ The reason for doing this is, comparing strings from the data file, against stri
 In decomposed form, the encoding of special characters like umlauts &auml; &ouml; &uuml; etc uses more bytes, than 
 in composed form that PHP is using. Next, some fonts might get in trouble to render decomposed utf 8 correctly.   
 
-More on the subject of decomposed, composed utf 8 here: <a href="http://unicode.org/reports/tr15/">unicode.org</a>
-  
 
+
+More on the subject of decomposed, composed utf 8 here: <a href="http://unicode.org/reports/tr15/">unicode.org</a>  
+Here is more excellent information about this subject  <a href="http://kunststube.net/encoding/">http://kunststube.net/encoding/</a>
+and even more interessting if you have to store utf-8 within a data base <a href="http://kunststube.net/encoding/">http://kunststube.net/frontback/</a>
+
+
+
+
+Added code to  skip over NON-SORT BEGIN,NON-SORT END characters.
+ 
 
 For usage of that reader look into index.php
 A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
