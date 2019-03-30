@@ -105,7 +105,7 @@
         echo "<script>var nrecForh2id='$nmatch/$nrec'</script>";
 
         function checkForUri($data, $code) {
-            if ($code * 1 === 0) {
+            if (is_int($code) && $code * 1 === 0) {
                 if (mb_substr($data, 0, 5) == '(uri)') {
                     $data = '<a href="' . mb_substr($data, 5) . '">' . $data . '</a>';
                 }

@@ -34,21 +34,6 @@ class m21File {
         $tagInd = Array();
         $m21 = $this->readM21Record($this->fh);
 
-        /**
-         * **********
-         * save leader as tag '000'
-         * ***********
-         **/
-        $tagInd[0] = (object) Array();
-        $tagInd[0]->tag = '000';
-        $tagInd[0]->ind = '  ';
-        $tagInd[0]->seq = '1';
-        $tagInd[0]->subs[0] = (object) Array();
-        $tagInd[0]->subs[0]->code = 'a';
-        $tagInd[0]->subs[0]->data = $this->leader;
-        
-
-
         while ($m21) {
             $i = 0;
             $nTags = (strlen($this->dict) - 1) / 12;
@@ -58,7 +43,7 @@ class m21File {
              * ***********************************************
              */
             $refTag = '';
-            for ($j = 0, $jj = 0, $i = 0; $j < $nTags; $j++, $i += 12) {
+            for ($j = 0, $jj = -1, $i = 0; $j < $nTags; $j++, $i+=12) {
                 $tag = mb_substr($this->dict, $i, 3);
 
                 if ($this->filter) {
@@ -141,7 +126,7 @@ class m21File {
                              * 
                              * *************
                              */
-                            $o += 2;
+                            $o+=2;
                         } else {
                             $myData[] = $this->data[$o];
                             $o++;

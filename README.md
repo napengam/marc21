@@ -31,7 +31,7 @@ Added code to  skip over NON-SORT BEGIN,NON-SORT END characters.
  
 
 For usage of that reader look into index.php
-A demo is here <a href="https://vz139.worldserver.net/marc21/">https://vz139.worldserver.net/marc21/</a>
+A demo is here <a href="http://hgsweb.de/marc21">http://hgsweb.de/marc21</a>
 
 <b>NOTE:</b> I do not check for any syntax errors within a file, I just <span style="color:red"><b>assume</b></span>,
 that the file exists is readable and syntacticaly correct .
