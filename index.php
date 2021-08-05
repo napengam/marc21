@@ -26,7 +26,8 @@
 
 
         $f = 1;
-        $m21 = new m21File($m21f[$f]);
+        $m21 = new m21File();
+        $m21->openM21($m21f[$f]);
         $m21->setTagFilter($filter);
 
         echo '<p>&nbsp;';
@@ -66,7 +67,6 @@
                 $head = '<td>' . $tags[$i]->tag . '</td>'
                         . '<td>' . $tags[$i]->seq . '</td>'
                         . '<td> ' . $tags[$i]->ind . '</td>';
-
 
                 if ($refTag != $tags[$i]->tag) {
                     $refTag = $tags[$i]->tag;
