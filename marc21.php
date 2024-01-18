@@ -54,7 +54,7 @@ class m21File {
          * */
         $oneTag = NULL;
         if ($this->filter) {
-            if (strpos($this->filter, '000') !== false) {
+            if (mb_strpos($this->filter, '000') !== false) {
                 $oneTag = (object) ''; // Array();
                 $oneTag->tag = '000';
                 $oneTag->ind = '  ';
@@ -90,15 +90,15 @@ class m21File {
              */
             $refTag = '';
             for ($j = 0, $i = 0; $j < $nTags; $j++) {
-                $tag = substr($this->dict, $i, 3);
+                $tag = mb_substr($this->dict, $i, 3);
                 $i += 3;
 
-                $len = substr($this->dict, $i, 4) + 0;
+                $len = mb_substr($this->dict, $i, 4) + 0;
                 $i += 4;
-                $offset = substr($this->dict, $i, 5) + 0;
+                $offset = mb_substr($this->dict, $i, 5) + 0;
                 $i += 5;
                 if ($this->filter && $tag !== '001') {
-                    if (strpos($this->filter, $tag) === false) {
+                    if (mb_strpos($this->filter, $tag) === false) {
                         continue; //tag not in filter; skip it
                     }
                 }

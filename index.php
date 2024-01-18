@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv = "Content-Type" content = "text/html; charset=utf-8" >
-        <script src="js/float.js"></script>
+
         <link href = "css/grid.css" type = "text/css" rel = "stylesheet" >
         <link href = "css/float.css" type = "text/css" rel = "stylesheet">
 
@@ -35,7 +35,7 @@
                 . '<a href="https://github.com/napengam/marc21" style="margin-left:1em;vertical-align:center">GitHub<img src="GitHub.png"></a><br>';
 
         $h2 = '<h2 id=h2id style="">File=' . basename($m21f[$f]) . "  filtered by tags $filter <br>" . $git;
-        $echo = '<table style="margin-left:10px;width:auto" id=t1 class=tgrid>'
+        $echo = '<table style="margin-left:10px;width:auto" id=t1 class=tgrid><thead>'
                 . '<tr>'
                 . '<th class=tgrid_th colspan=5>' . $h2 . '</th></tr>'
                 . '<tr>'
@@ -44,7 +44,7 @@
                 . '<th data-rotate class=tgrid_th>Indicator</th>'
                 . '<th data-rotate class=tgrid_th>Subfield<br>Code</th>'
                 . '<th class=tgrid_th> Subfielddata</th>'
-                . '</tr>';
+                . '</tr></thead>';
 
         $nrec = $nmatch = 0;
         while (($tags = $m21->decodeRecord()) !== NULL) {
@@ -113,19 +113,14 @@
             return $data;
         }
         ?>
+        <script src="js/stickyCSS.js"></script>
+        <script src="js/vertical.js"></script>
         <script type="text/javascript">
-            function addEvent(obj, ev, fu) {
-                if (obj.addEventListener) {
-                    obj.addEventListener(ev, fu, false);
-                } else {
-                    var eev = 'on' + ev;
-                    obj.attachEvent(eev, fu);
-                }
-            }
-            addEvent(window, 'load', function () {
+            window.addEventListener('load', function () {
                 document.getElementById('h2id').innerHTML += '<br>Number of records=' + nrecForh2id;
-                floatHeader('t1', {ncpth: [0, 0], nccol: 0, topDif: 000, leftDif: 000});
-            });
+                rotateHeadCell('t1');
+                makeSticky('t1', {'col': 4, 'loff': 0, 'toff': 0});
+            }, false);
 
         </script>
     </body>
