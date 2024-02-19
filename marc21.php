@@ -52,26 +52,20 @@ class m21File {
          * save leader as tag '000'
          * ***********
          * */
-        $oneTag = NULL;
+        $oneTag = (object) '';
+        $oneTag->tag = '000';
+        $oneTag->ind = '  ';
+        $oneTag->seq = '1';
+        $oneTag->subs[0] = (object) '';
+        $oneTag->subs[0]->code = 'a';
+        $oneTag->subs[0]->data = $this->leader;
+
         if ($this->filter) {
-            if (mb_strpos($this->filter, '000') !== false) {
-                $oneTag = (object) ''; // Array();
-                $oneTag->tag = '000';
-                $oneTag->ind = '  ';
-                $oneTag->seq = '1';
-                $oneTag->subs[0] = (object) ''; // Array();
-                $oneTag->subs[0]->code = 'a';
-                $oneTag->subs[0]->data = $this->leader;
+            if (strpos($this->filter, '000') === false) {
+                $oneTag = NULL;
             }
-        } else {
-            $oneTag = (object) ''; // Array();
-            $oneTag->tag = '000';
-            $oneTag->ind = '  ';
-            $oneTag->seq = '1';
-            $oneTag->subs[0] = (object) ''; // Array();
-            $oneTag->subs[0]->code = 'a';
-            $oneTag->subs[0]->data = $this->leader;
         }
+
         if ($oneTag !== NULL) {
             $tagInd[] = $oneTag;
         }
@@ -90,15 +84,14 @@ class m21File {
              */
             $refTag = '';
             for ($j = 0, $i = 0; $j < $nTags; $j++) {
-                $tag = mb_substr($this->dict, $i, 3);
+                $tag = substr($this->dict, $i, 3);
                 $i += 3;
-
-                $len = mb_substr($this->dict, $i, 4) + 0;
+                $len = substr($this->dict, $i, 4) + 0;
                 $i += 4;
-                $offset = mb_substr($this->dict, $i, 5) + 0;
+                $offset = substr($this->dict, $i, 5) + 0;
                 $i += 5;
                 if ($this->filter && $tag !== '001') {
-                    if (mb_strpos($this->filter, $tag) === false) {
+                    if (strpos($this->filter, $tag) === false) {
                         continue; //tag not in filter; skip it
                     }
                 }
@@ -136,19 +129,8 @@ class m21File {
                         $offset++;
                         $oneTag->subs[$s]->code = $this->data[$offset];
                         $offset++;
-                    } else {
-                        /*
-                         * ***********************************************
-                         *  no subfield code 
-                         * ***********************************************
-                         */
-                        $oneTag->subs[$s]->code = '';
                     }
-                    /*
-                     * ************
-                     * skip to end of data
-                     * *************
-                     */
+
                     $myData = [];
                     $o = $offset;
                     while ($this->data[$o] >= ' ') {
@@ -160,10 +142,12 @@ class m21File {
                                  * skip over  
                                  * NON-SORT BEGIN / START OF STRING UTF 8 as (HEX) 0xC2  0x98 (dec) 194 152
                                  * NON-SORT END / STRING TERMINATOR UTF 8 as (HEX) 0xC2  0x9C (dec) 194 156
-                                 * 
+                                 * Indicate this to the caller as '{{{' and }}}'. it is up to the caller how 
+                                 * to deal with these patterns.
+                                 * preg_replace('/\{\{\{.*\}\}\}/', ' ', $input_lines);
                                  * *************
                                  */
-                                $do1 === 152 ? $myData[] = '{' : $myData[] = '}';
+                                $do1 === 152 ? $myData[] = '{{{' : $myData[] = '}}}';
                                 $o += 2;
                                 continue;
                             }
@@ -176,7 +160,7 @@ class m21File {
                      * save data
                      * *************
                      */
-                    $oneTag->subs[$s]->data = Normalizer::normalize(implode($myData), Normalizer::FORM_C);
+                    $oneTag->subs[$s]->data = Normalizer::normalize(implode('', $myData), Normalizer::FORM_C);
                     $offset = $o;
                     $s++;
                 }
@@ -248,5 +232,4 @@ class m21File {
         }
         return true;
     }
-
 }
