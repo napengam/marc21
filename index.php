@@ -17,10 +17,10 @@
         $m21f[2] = 'mrc/marc-00000000-00001999.mrc';
 
         $filter = '100|245|020|246|264';
-        if ($_GET['nofilter'] == 1) {
+        if (isset($_GET['nofilter']) && $_GET['nofilter'] == 1) {
             $filter = '';
         }
-        if (strlen($_GET['filter']) > 0) {
+        if (isset($_GET['filter']) && strlen($_GET['filter']) > 0) {
             $filter = $_GET['filter'];
         }
 
@@ -61,7 +61,8 @@
                     . '<td></td>'
                     . '<td style="text-align:right;" >' . $nrec . '</td>'
                     . '</tr>';
-
+           
+            $separator = '';
             for ($i = 0, $refTag = ''; $i < $n; $i++) {
 
                 $head = '<td>' . $tags[$i]->tag . '</td>'

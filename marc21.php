@@ -49,7 +49,7 @@ class m21File {
 
         /**
          * **********
-         * save leader as tag '000'
+         * construct leader as tag '000'
          * ***********
          * */
         $oneTag = (object) '';
@@ -67,11 +67,15 @@ class m21File {
         }
 
         if ($oneTag !== NULL) {
+            /*
+             * ***********************************************
+             *  save leader as tag '000'
+             * **********************************************
+             */
             $tagInd[] = $oneTag;
         }
 
         while ($m21) {
-            $i = 0;
             $nTags = (strlen($this->dict) - 1) / 12;
             if (is_int($nTags) === false) {
                 $this->error .= " Anzahl Tags $nTags keine ganze Zahl ";
@@ -85,21 +89,23 @@ class m21File {
             $refTag = '';
             for ($j = 0, $i = 0; $j < $nTags; $j++) {
                 $tag = substr($this->dict, $i, 3);
+                if ($this->filter && $tag !== '001') {
+                    if (strpos($this->filter, $tag) === false) {
+                        $i += 12;
+                        continue; //tag not in filter; skip it
+                    }
+                }
                 $i += 3;
                 $len = substr($this->dict, $i, 4) + 0;
                 $i += 4;
                 $offset = substr($this->dict, $i, 5) + 0;
                 $i += 5;
-                if ($this->filter && $tag !== '001') {
-                    if (strpos($this->filter, $tag) === false) {
-                        continue; //tag not in filter; skip it
-                    }
-                }
+
                 if ($tag != $refTag) {
                     $seq = 1;
                     $refTag = $tag;
                 }
-                $oneTag = (object) ['tag' => $tag, 'ind' => '  ', 'seq' => $seq]; //              
+                $oneTag = (object) ['tag' => $tag, 'ind' => '  ', 'seq' => $seq, 'subs' => []]; //              
                 /*
                  * ***********************************************
                  * indicators ?
@@ -132,10 +138,9 @@ class m21File {
                     }
 
                     $myData = [];
-                    $o = $offset;
-                    while ($this->data[$o] >= ' ') {
-                        if (ord($this->data[$o]) === 194) {
-                            $do1 = ord($this->data[$o + 1]);
+                    while ($this->data[$offset] >= ' ') {
+                        if (ord($this->data[$offset]) === 194) {
+                            $do1 = ord($this->data[$offset + 1]);
                             if ($do1 === 152 || $do1 === 156) {
                                 /*
                                  * ************
@@ -148,12 +153,12 @@ class m21File {
                                  * *************
                                  */
                                 $do1 === 152 ? $myData[] = '{{{' : $myData[] = '}}}';
-                                $o += 2;
+                                $offset += 2;
                                 continue;
                             }
                         }
-                        $myData[] = $this->data[$o];
-                        $o++;
+                        $myData[] = $this->data[$offset];
+                        $offset++;
                     }
                     /*
                      * ************
@@ -161,7 +166,6 @@ class m21File {
                      * *************
                      */
                     $oneTag->subs[$s]->data = Normalizer::normalize(implode('', $myData), Normalizer::FORM_C);
-                    $offset = $o;
                     $s++;
                 }
                 $tagInd[] = $oneTag;
