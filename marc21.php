@@ -29,7 +29,7 @@
 class m21File {
 
     private $fh, $filter, $leader, $dict, $data = [], $nRecords, $dataLen;
-    public $recordOffset, $pos67, $error = '';
+    public $recordOffset, $pos67, $error = '', $nonSortShow = false;
 
     function openM21($m21File) {
         if (file_exists($m21File)) {
@@ -152,7 +152,9 @@ class m21File {
                                  * preg_replace('/\{\{\{.*\}\}\}/', ' ', $input_lines);
                                  * *************
                                  */
-                                $do1 === 152 ? $myData[] = '{{{' : $myData[] = '}}}';
+                                if ($this->nonSortShow) {
+                                    $do1 === 152 ? $myData[] = '{{{' : $myData[] = '}}}';
+                                }
                                 $offset += 2;
                                 continue;
                             }
